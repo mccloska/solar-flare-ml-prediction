@@ -218,7 +218,7 @@ python processing.py
 
 Features are derived from McIntosh classification components:
 - **Zurich classification** (sunspot area, height, complexity)
-- **Penetration class** (magnetic field configuration)
+- **Penumbral class** (magnetic field configuration)
 - **Reduced class** (sunspot compactness)
 - **McIntosh evolution codes** (static and dynamic properties)
 
