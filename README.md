@@ -15,6 +15,8 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Jupyter Notebooks](#jupyter-notebooks)
+  - [Python Scripts](#python-scripts)
 - [Data & Methodology](#data--methodology)
 - [Models & Algorithms](#models--algorithms)
 - [Results & Evaluation](#results--evaluation)
@@ -27,7 +29,7 @@
 
 ## Overview
 
-This repository contains machine learning implementations for predicting solar flares based on sunspot characteristics. The project builds upon traditional McIntosh classification-based forecasting methods and explores modern ML approaches to enhance operational flare forecast services.
+This repository contains machine learning implementations for predicting solar flares based on sunspot characteristics. The project builds upon traditional McIntosh classification-based forecasting and includes both interactive Jupyter notebooks and production Python scripts.
 
 **Primary Goal**: Develop and evaluate ML-based solar flare prediction models to enhance operational flare forecast services.
 
@@ -37,7 +39,7 @@ This repository contains machine learning implementations for predicting solar f
 
 ### Background
 
-Historically, McIntosh classifications of sunspots have been utilized for the prediction of solar flares. Modern operational flare forecast services still rely upon these classifications for their operational forecasts.
+Historically, McIntosh classifications of sunspots have been utilized for the prediction of solar flares. Modern operational flare forecast services still rely upon these classifications for their predictions.
 
 ### Objectives
 
@@ -66,6 +68,7 @@ Historically, McIntosh classifications of sunspots have been utilized for the pr
 ✅ Solar Cycle Dependency Analysis  
 ✅ McIntosh Classification-based Features  
 ✅ 24-hour Flare Prediction Window  
+✅ Interactive Jupyter Notebooks  
 ✅ Calibration Analysis & Reliability Diagrams  
 
 ---
@@ -82,6 +85,12 @@ solar-flare-ml-prediction/
 │   ├── mcint_ml22.csv            # McIntosh data for Solar Cycle 22 (training set)
 │   ├── mcint_ml23.csv            # McIntosh data for Solar Cycle 23 (test set)
 │   └── mcint_ml.csv              # Additional McIntosh data
+│
+├── notebooks/                     # Jupyter notebooks for interactive analysis
+│   ├── 01_Data_Overview_and_Exploration.ipynb           # Data exploration & visualization
+│   ├── 02_ML_Pipeline_and_Evaluation.ipynb              # K-Fold ML pipeline with 5 algorithms
+│   ├── 03_Feature_Importance_Analysis.ipynb             # Feature importance breakdown
+│   └── 04_Cycle_to_Cycle_Transfer_Learning.ipynb        # Cycle 22 → Cycle 23 cross-validation
 │
 ├── Core ML Scripts
 │   ├── machine_learn_kfold.py    # K-Fold cross-validation ML pipeline
@@ -102,7 +111,7 @@ solar-flare-ml-prediction/
 │   └── realtime_forecast_mcint.py # Real-time forecasting module
 │
 ├── Output Directories
-│   ├── data/                     # Data storage directory (may contain raw/processed data)
+│   ├── data/                     # Data storage directory
 │   ├── plots/                    # Generated plots and visualizations
 │   └── [outputs]/                # ROC curves, metric comparisons, feature importance plots
 │
@@ -111,35 +120,15 @@ solar-flare-ml-prediction/
     └── __pycache__/              # Python cache directory (auto-generated)
 ```
 
-### Script Descriptions
-
-#### Machine Learning Pipeline
-- **`machine_learn_kfold.py`** (Main): Implements K-Fold stratified cross-validation across solar cycles. Evaluates multiple algorithms (LR, LDA, KNN, CART, RFC) with custom skill score metrics (BSS, TSS).
-- **`machine_learn_full.py`** (Alternative): Trains on complete Solar Cycle 22, tests on Solar Cycle 23. Includes feature importance comparisons and calibration analysis.
-
-#### Data Processing
-- **`processing.py`**: Processes raw NOAA SWPC SRS (Solar Region Summary) and Event files, linking AR properties with X-ray flare occurrences.
-- **`get_data.py`**: Downloads solar data directly from NOAA FTP server for specified years.
-- **`swpc_proc.py`**: Utility functions for reading and parsing SWPC data formats.
-
-#### Evaluation & Visualization
-- **`calibration_curve_plot.py`**: Generates reliability diagrams for model probability calibration.
-- **`ss_custom.py`**: Custom skill score calculations (Brier Skill Score, True Skill Statistic).
-- **`rfc_importance.py`**: Analyzes and visualizes feature importance from Random Forest models.
-
-#### Data Files
-- **`mcint_ml22.csv`**: McIntosh classification data + flare labels for Solar Cycle 22
-- **`mcint_ml23.csv`**: McIntosh classification data + flare labels for Solar Cycle 23
-- **`mcint_ml.csv`**: Additional McIntosh dataset
-
 ---
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.7+
+- Python 3.8+
 - pip or conda package manager
+- Jupyter Notebook (for interactive notebooks)
 - Basic familiarity with machine learning and solar physics concepts
 
 ### Installation
@@ -160,13 +149,35 @@ solar-flare-ml-prediction/
    ```bash
    pip install -r requirements.txt
    ```
-   (Note: If `requirements.txt` doesn't exist, you can install dependencies manually from the imports in the scripts)
+   Or install manually:
+   ```bash
+   pip install pandas numpy scikit-learn matplotlib seaborn scipy jupyter
+   ```
 
 ---
 
 ## Usage
 
-### Running the ML Pipeline
+### Jupyter Notebooks
+
+The easiest way to explore this project is through the interactive Jupyter notebooks:
+
+```bash
+jupyter notebook
+```
+
+Then navigate to the `notebooks/` directory and open them in order:
+
+| Notebook | Purpose |
+|----------|---------|
+| **01_Data_Overview_and_Exploration.ipynb** | Load data, explore distributions, visualize McIntosh features |
+| **02_ML_Pipeline_and_Evaluation.ipynb** | K-Fold cross-validation with 5 ML algorithms (LR, LDA, KNN, CART, RFC) |
+| **03_Feature_Importance_Analysis.ipynb** | Analyze which McIntosh components matter most for predictions |
+| **04_Cycle_to_Cycle_Transfer_Learning.ipynb** | Train on Cycle 22, test on Cycle 23 - evaluate cross-cycle generalization |
+
+Each notebook includes visualizations, performance metrics, and detailed explanations.
+
+### Python Scripts
 
 #### Option 1: K-Fold Cross-Validation (Recommended)
 ```bash
@@ -188,21 +199,17 @@ When prompted:
 
 Output: Calibration diagrams, ROC curves, comparative feature importance plots
 
-### Data Retrieval
-
-To download solar data from NOAA:
+#### Data Retrieval
 ```bash
 python get_data.py
 ```
-This will download SRS and Event files to the `data/` directory.
+Downloads SRS and Event files to the `data/` directory from NOAA SWPC server.
 
-### Data Processing
-
-To process raw NOAA SWPC data files:
+#### Data Processing
 ```bash
 python processing.py
 ```
-(Note: Requires NOAA raw SRS and Event files in appropriate subdirectories)
+Processes raw NOAA SWPC data files. (Requires NOAA raw SRS and Event files)
 
 ---
 
@@ -210,7 +217,7 @@ python processing.py
 
 ### Data Sources
 
-- **Solar cycles**: Data from multiple independent solar cycle periods (Cycles 22 & 23)
+- **Solar cycles**: Data from independent solar cycle periods (Cycles 22 & 23)
 - **McIntosh classifications**: Sunspot classification attributes with evolution codes
 - **Flare labels**: Historical solar flare occurrence within 24-hour windows
 
@@ -218,13 +225,13 @@ python processing.py
 
 Features are derived from McIntosh classification components:
 - **Zurich classification** (sunspot area, height, complexity)
-- **Penumbral class** (magnetic field configuration)
+- **Penetration class** (magnetic field configuration)
 - **Reduced class** (sunspot compactness)
 - **McIntosh evolution codes** (static and dynamic properties)
 
 ### Cross-Validation Strategy
 
-- **Solar cycle-based splitting**: Models trained on Cycle 22, tested on Cycle 23 (or vice versa)
+- **Solar cycle-based splitting**: Models trained on Cycle 22, tested on Cycle 23
 - **K-Fold stratified sampling**: 10-fold stratification respects temporal and class dependencies
 - **Time-series considerations**: Respects temporal dependencies in solar data
 
@@ -239,7 +246,7 @@ The project evaluates and compares multiple machine learning algorithms:
 - **K-Nearest Neighbors (KNN)**: Non-parametric instance-based learning
 - **Decision Tree / CART**: Single tree classifier with feature importance
 - **Random Forest Classifier (RFC)**: Ensemble method with robust feature importance
-- **Support Vector Machines (SVM)**: Non-linear classification (in full pipeline)
+- **Support Vector Machines (SVM)**: Non-linear classification (in notebooks)
 
 Each model is evaluated against:
 - **Poisson-based baseline forecasts** (operational standard)
@@ -275,9 +282,10 @@ The scripts generate:
 
 ### Code Documentation
 
-Each script includes:
+Each script and notebook includes:
 - **Docstrings**: Function documentation (where present)
 - **Comments**: Explanations of complex logic, especially around feature encoding
+- **Markdown cells**: Detailed explanations in notebooks
 
 ### Customization
 
@@ -326,13 +334,6 @@ This project is provided as-is for research and educational purposes. Please cit
 - **Machine Learning in Solar Physics**: Emerging applications of ML to space weather prediction
 
 See `References.md` for a comprehensive list of literature references and key citations.
-
-### Recommended Reading
-
-- Space Weather prediction literature
-- Solar flare prediction studies
-- Machine learning classification techniques
-- Cross-validation methodologies for time-series data
 
 ---
 
